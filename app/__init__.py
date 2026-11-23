@@ -14,7 +14,8 @@ def create_app(test_config=None):
         app.config.update(test_config)
 
     db.init_app(app)
-
+    from app.routes import bp
+    app.register_blueprint(bp)
     from app import models  # noqa: F401
 
     with app.app_context():

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1 class="h3 mb-4">Dashboard</h1>
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="card text-center"><div class="card-body">
+      <div class="text-muted small">Products</div>
+      <div class="fs-3">{{ product_count }}</div>
+    </div></div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card text-center"><div class="card-body">
+      <div class="text-muted small">Units in stock</div>
+      <div class="fs-3">{{ total_units }}</div>
+    </div></div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card text-center"><div class="card-body">
+      <div class="text-muted small">Low / out of stock</div>
+      <div class="fs-3">{{ low_stock|length }} / {{ out_of_stock|length }}</div>
+    </div></div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card text-center"><div class="card-body">
+      <div class="text-muted small">Inventory value</div>
+      <div class="fs-3">₹{{ "%.2f"|format(value) }}</div>
+    </div></div>
+  </div>
+</div>
+
+{% if low_stock or out_of_stock %}
+<div class="alert alert-warning">
+  <strong>Attention:</strong>
+  {% for p in out_of_stock %}<span class="badge bg-danger me-1">{{ p.name }}: out of stock</span>{% endfor %}
+  {% for p in low_stock %}<span class="badge bg-warning text-dark me-1">{{ p.name }}: {{ p.quantity }} left</span>{% endfor %}
+</div>
+{% endif %}
+
+<h2 class="h5">Recent transactions</h2>
+<div class="table-responsive">
+  <table class="table table-sm bg-white">
+    <thead><tr><th>When</th><th>Product</th><th>Type</th><th>Change</th><th>After</th></tr></thead>
+    <tbody>
+      {% for t in recent %}
+      <tr>
+        <td>{{ t.created_at.strftime("%Y-%m-%d %H:%M") }}</td>
+        <td>{{ t.product.name }}</td>
+        <td>{{ t.type }}</td>
+        <td>{{ t.quantity_change }}</td>
+        <td>{{ t.quantity_after }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" class="text-muted">No transactions yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

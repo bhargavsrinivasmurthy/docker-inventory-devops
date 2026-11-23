@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Stock: {{ product.name }}{% endblock %}
+{% block content %}
+<h1 class="h3 mb-1">{{ product.name }}</h1>
+<p class="text-muted">SKU {{ product.sku }} | In stock: <strong>{{ product.quantity }}</strong> | Low-stock threshold: {{ product.low_stock_threshold }}</p>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <form method="post" class="card card-body">
+      <input type="hidden" name="action" value="receipt">
+      <h2 class="h6">Receive stock</h2>
+      <input class="form-control mb-2" name="quantity" type="number" min="1" placeholder="Quantity" required>
+      <button class="btn btn-success" type="submit">Receive</button>
+    </form>
+  </div>
+  <div class="col-md-4">
+    <form method="post" class="card card-body">
+      <input type="hidden" name="action" value="sale">
+      <h2 class="h6">Record sale</h2>
+      <input class="form-control mb-2" name="quantity" type="number" min="1" placeholder="Quantity" required>
+      <button class="btn btn-primary" type="submit">Sell</button>
+    </form>
+  </div>
+  <div class="col-md-4">
+    <form method="post" class="card card-body">
+      <input type="hidden" name="action" value="adjustment">
+      <h2 class="h6">Adjust to new quantity</h2>
+      <input class="form-control mb-2" name="quantity" type="number" min="0" placeholder="New quantity" required>
+      <input class="form-control mb-2" name="reason" placeholder="Reason (required)" required>
+      <button class="btn btn-warning" type="submit">Adjust</button>
+    </form>
+  </div>
+</div>
+
+{% if product.is_active %}
+<form method="post" action="{{ url_for('main.deactivate', product_id=product.id) }}">
+  <button class="btn btn-outline-danger btn-sm" type="submit">Deactivate product</button>
+</form>
+{% endif %}
+<a class="btn btn-link" href="{{ url_for('main.products') }}">Back to products</a>
+{% endblock %}
